@@ -5,18 +5,18 @@
     - name: Perform a distro upgrade
       ansible.builtin.apt:
         upgrade: dist
-        update_cache: yes
+        update_cache: true
+
+    - name: Remove dependencies that are no longer needed
+      ansible.builtin.apt:
+        autoremove: true
 
     - name: Check if a reboot is required
       ansible.builtin.stat:
         path: /var/run/reboot-required
-        get_checksum: no
+        get_checksum: false
       register: reboot_required_file
 
     - name: Reboot the server (if necessary)
       ansible.builtin.reboot:
       when: reboot_required_file.stat.exists == true
-
-    - name: Remove dependencies that are no longer needed
-      ansible.builtin.apt:
-        autoremove: yes
